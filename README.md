@@ -79,14 +79,20 @@ this command:
 you can use Composer:
 
 ```bash
-$ composer create-project symfony/website-skeleton product_catalog
+$ composer create-project symfony/website-skeleton product-catalogue-symfony
+
+OR 
+
+$ git clone https://github.com/shilgari-vandana/product-catalogue-symfony.git
+$ cd product-catalogue-symfony
+$ composer update
 ```
 
 Usage
 ---------------------------------------------------------------------------------------
 Manual DB import::
 
-Import the DB schema from ./product_catalogue/db_product_catalogue.sql
+Import the DB schema from ./product-catalogue-symfony/product-catalogue-symfony.sql
 
 OR
 
@@ -109,7 +115,7 @@ browser at the given URL (<http://localhost> by default):
 
 
 ```bash
-$ cd product_catalog/
+$ cd product-catalogue-symfony/
 $ symfony serve
 
 
@@ -125,12 +131,12 @@ Tests
 Execute this command to run tests:
 
 ```bash
-$ cd  product_catalogue/
+$ cd  product-catalogue-symfony/
 $ ./vendor/bin/phpunit
 
 eg..
 
-D:\Vandana\product_catalogue\vendor\bin>phpunit -c ..\..\phpunit.xml.dist
+D:\Vandana\product-catalogue-symfony\vendor\bin>phpunit -c ..\..\phpunit.xml.dist
 PHPUnit 7.5.20 by Sebastian Bergmann and contributors.
 
 ...................................                               35 / 35 (100%)
@@ -139,4 +145,4 @@ Time: 14.85 seconds, Memory: 48.00 MB
 
 OK (35 tests, 74 assertions)
 
-D:\Vandana\product_catalogue\vendor\bin>
+D:\Vandana\product-catalogue-symfony\vendor\bin>
