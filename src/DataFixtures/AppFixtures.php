@@ -12,7 +12,7 @@ use Doctrine\Common\DataFixtures\AbstractFixture;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-class AppFixtures extends AbstractFixture
+class AppFixtures extends Fixture
 {
     private $passwordEncoder;
     private $slugger;
