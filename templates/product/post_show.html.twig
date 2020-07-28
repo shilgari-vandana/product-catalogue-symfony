@@ -1,0 +1,109 @@
+{% extends 'base.html.twig' %}
+
+{% block body_id 'product_post_show' %}
+
+{% block title %}
+         <title>{{ product.name }}</title>
+{% endblock %}
+
+{% block main %}
+    <h1>{{ product.name }}</h1>
+
+    {% if is_granted('edit', product) %}
+        <div class="row post-comment" align="right">  
+        <a class="btn btn-success" href="{{ path('admin_product_edit', {id: product.id}) }}">
+            <i class="fa fa-edit" aria-hidden="true"></i> {{ 'action.edit_product'|trans }}
+        </a>
+        </div>
+    {% endif %}
+
+    <p class="product-metadata">
+        <span class="metadata">${{ product.price }}</span>
+        <span class="metadata"><i class="fa fa-calendar"></i> {{ product.publishedAt|date('Y-m-d H:i:s') }}</span>
+        <span class="metadata"><i class="fa fa-user"></i> {{ product.author.fullName }}</span>
+    </p>
+
+    {% if(product.FileName) %}
+    <p class="row-cols-2"><img src="{{ asset('uploads/products/' ~ product.FileName) }}" class="img-thumbnail" width="400px" height="400px"></a></p>
+    {% endif %}
+
+
+    <div style="word-wrap: break-word;">{{ product.content|markdown_to_html|sanitize_html }}</div>
+
+    <div id="product-add-comment" class="well">
+        {# The 'IS_AUTHENTICATED_FULLY' role ensures that the user has entered
+        their credentials (login + password) during this session. If they
+        are automatically logged via the 'Remember Me' functionality, they won't
+        be able to add a comment.
+        See https://symfony.com/doc/current/security/remember_me.html#forcing-the-user-to-re-authenticate-before-accessing-certain-resources
+        #}
+        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+            {{ render(controller('App\\Controller\\ProductController::commentForm', {'id': product.id})) }}
+        {% else %}
+            <p>
+                <a class="btn btn-success" href="{{ path('security_login', {'redirect_to': app.request.pathInfo}) }}">
+                    <i class="fa fa-sign-in" aria-hidden="true"></i> {{ 'action.sign_in'|trans }}
+                </a>
+                {{ 'product.to_publish_a_comment'|trans }}
+            </p>
+        {% endif %}
+        <span>{{'help.comment_visible'|trans}}</span>
+    </div>
+
+    <h3>
+        <i class="fa fa-comments" aria-hidden="true"></i> {{ 'post.num_comments'|trans({ 'count': product.comments|length }) }}
+    </h3>
+
+    {% for comment in product.comments %}
+        {% if not is_granted('ROLE_ADMIN') and comment.approved %} 
+        <div class="row post-comment">
+            <a name="comment_{{ comment.id }}"></a>
+            <h4 class="col-sm-3">
+                <strong>{{ comment.author.fullName }}</strong> {{ 'post.commented_on'|trans }}
+                <strong>{{ comment.publishedAt|date('Y-m-d H:i:s') }}</strong>
+            </h4>
+            <div class="col-sm-9">
+                {{ comment.content|markdown_to_html|sanitize_html }}
+            </div>           
+        </div>
+        <hr>
+        {% endif %}
+
+        {% if is_granted('ROLE_ADMIN')%}
+        <div class="row post-comment">
+            <span id="{{ comment.id }}"></span>
+            <a name="comment_{{ comment.id }}"></a>
+            <h4 class="col-sm-3"> 
+                <strong>{{ comment.author.fullName }}</strong> {{ 'post.commented_on'|trans }}
+                <strong>{{ comment.publishedAt|date('Y-m-d H:i:s') }}</strong>
+            </h4>
+            <div class="col-sm-9">
+                {{ comment.content|markdown_to_html|sanitize_html }}
+            </div>
+        </div>
+        {% endif %}
+        {% if is_granted('ROLE_ADMIN') and is_granted('edit', product) %}        
+        <div class="container" align="right"> 
+            {% if not comment.approved %}   
+                <a class="btn btn-success" href="{{ path('admin_comment_approve', {product_id: product.id,id: comment.id}) }}">
+                    <i aria-hidden="true"></i> {{ 'action.approve_comment'|trans }}
+                </a>
+            {% endif %}
+            {% if comment.approved %}
+                <a class="btn btn-success" href="{{ path('admin_comment_reject', {product_id: product.id,id: comment.id}) }}">
+                    <i aria-hidden="true"></i> {{ 'action.reject_comment'|trans }}
+                </a>
+            {% endif %}
+            <div class="btn">
+            {{ include('product/_delete_comment_form.html.twig', {product: product,comment:comment}, with_context = false) }}         
+            </div>
+        </div>
+        {% endif %}
+        <hr>
+     
+    {% else %}
+        <div class="post-comment">
+            <p>{{ 'product.no_comments'|trans }}</p>
+        </div>
+    {% endfor %}
+{% endblock %}

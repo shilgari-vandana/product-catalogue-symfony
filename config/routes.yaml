@@ -1,3 +1,14 @@
-#index:
-#    path: /
-#    controller: App\Controller\DefaultController::index
+login:
+    path: /{_locale}
+    controller: App\Controller\SecurityController::login
+    requirements:
+        _locale: '%app_locales%'
+    defaults:        
+        template: security/login.html.twig
+        _locale: '%locale%'
+
+
+# login:
+#     path:       /
+#     controller: App\Controller\SecurityController::login
+#     methods: GET|POST

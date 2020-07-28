@@ -1,0 +1,39 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block body_id 'admin_post_show' %}
+
+{% block title %}
+         <title>{{ product.name }}</title>
+{% endblock %}
+
+{% block main %}
+    <h1>{{ product.name }}</h1>
+
+    <p class="post-metadata">
+        <span class="metadata">${{ product.price }}</span>
+        <span class="metadata"><i class="fa fa-calendar"></i> {{ product.publishedAt|date('Y-m-d H:i:s') }}</span>
+        <span class="metadata"><i class="fa fa-user"></i> {{ product.author.fullName }}</span>
+    </p>
+
+    {% if(product.FileName) %}
+    <div class="row-cols-1"><img src="{{ asset('uploads/products/' ~ product.FileName) }}"  alt="Generic placeholder image" width="200" class="ml-lg-2 order-1 order-lg-5"></a></div>
+    {% endif %}
+
+    <div class="well">
+        <p class="m-b-0" style="word-wrap: break-word;"><strong>{{ 'label.summary'|trans }}</strong>: {{ product.summary }}</p>
+    </div>
+
+    <div style="word-wrap: break-word;">{{ product.content|markdown_to_html|sanitize_html }}</div>
+
+    <div class="container" align="right">
+        <div class="btn">
+            <a href="{{ path('admin_product_edit', {id: product.id}) }}" class="btn btn-lg btn-block btn-success">
+                <i class="fa fa-edit" aria-hidden="true"></i> {{ 'action.edit_contents'|trans }}
+            </a>
+        </div>
+        <div class="btn">
+            {{ include('admin/product/_delete_form.html.twig', {product: product}, with_context = false) }}
+        </div>           
+    </div>
+
+{% endblock %}
